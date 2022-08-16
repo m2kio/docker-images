@@ -1,0 +1,1 @@
+docker run -dit --name web -p 80:80 -v /path/to/html/files:/usr/local/apache2/htdocs/ httpd:alpine3.14
