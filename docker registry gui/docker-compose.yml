@@ -1,0 +1,30 @@
+version: "2.0"
+services:
+  registry:
+    image: registry:2
+    container_name: registry
+    restart: unless-stopped
+    volumes:
+      - ./registry-data:/var/lib/registry
+      - ./config/config.yml:/etc/docker/registry/config.yml
+      - ./config/htpasswd:/etc/docker/registry/htpasswd
+    networks:
+      - registry-ui-net
+
+  ui:
+    image: joxit/docker-registry-ui:latest
+    container_name: registry-ui
+    restart: unless-stopped
+    ports:
+      - 80:80
+    environment:
+      - REGISTRY_TITLE=some-cr
+      - NGINX_PROXY_PASS_URL=http://registry:5000
+      - SINGLE_REGISTRY=true
+    depends_on:
+      - registry
+    networks:
+      - registry-ui-net
+
+networks:
+  registry-ui-net:
